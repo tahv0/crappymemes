@@ -1,0 +1,8 @@
+*.pyc
+/.python-version
+**/migrations/*
+db.sqlite3
+*.mo
+*.log
+.venv
+.idea
