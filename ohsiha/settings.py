@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',
     'crappymemes',
+    'chartjs',
 ]
 
 MIDDLEWARE = [
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'ohsiha.urls'
@@ -64,8 +67,11 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+                'crappymemes.context_processors.giphy_processor',
             ],
-        },
+        }
     },
 ]
 
@@ -121,5 +127,37 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static_cdn')
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
+
+SOCIAL_AUTH_GITHUB_KEY = 'key'
+SOCIAL_AUTH_GITHUB_SECRET = 'key'
+
+SOCIAL_AUTH_TWITTER_KEY = 'key'
+SOCIAL_AUTH_TWITTER_SECRET = 'key'
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = 'key'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'key'  # App Secret
+
+SOCIAL_AUTH_USER_MODEL = 'auth.User'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.github.GithubOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'index'
+
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/settings/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/settings/'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']

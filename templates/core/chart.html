@@ -1,0 +1,43 @@
+{% load staticfiles %}
+{% block content %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+  <canvas id="myChartLikes"></canvas>
+  <canvas id="myChartComments"></canvas>
+  <script>
+      $(document ).ready(function() {
+          $.get('{% url 'meme_comments' meme.id %}', function(data, status) {
+              data = JSON.parse(data);
+              var ctx = document.getElementById('myChartComments').getContext('2d');
+              var myChart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: data['labels'],
+                      datasets: [{
+                          label: 'Comments',
+                          data: data['values'],
+                          backgroundColor: "rgba(153,255,51,0.4)"
+                      }]
+                  }
+              });
+
+          });
+          $.get('{% url 'meme_likes' meme.id %}', function(data, status) {
+              data = JSON.parse(data);
+              var ctx = document.getElementById('myChartLikes').getContext('2d');
+              var myChart = new Chart(ctx, {
+                  type: 'line',
+                  data: {
+                      labels: data['labels'],
+                      datasets: [{
+                          label: 'Likes',
+                          data: data['values'],
+                          backgroundColor: "rgba(153,255,51,0.4)"
+                      }]
+                  }
+              });
+
+          });
+      });
+  </script>
+{% endblock %}
+

@@ -6,3 +6,7 @@ db.sqlite3
 *.log
 .venv
 .idea
+*.jpg
+*.jpeg
+*.png
+*.gif

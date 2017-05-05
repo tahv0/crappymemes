@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Edit meme</h1>
+    <img src="{{ meme.pic.url }}"/>
+    <form method="POST" class="post-form" action="{% url 'edit_meme' meme_id=meme.id %}" enctype="multipart/form-data">
+      {% csrf_token %}
+        {{ form.as_table }}
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+{% endblock %}

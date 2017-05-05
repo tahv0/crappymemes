@@ -1,10 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="panel-group">
+      {% for meme in memes %}
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a href="{% url 'show_meme' meme_id=meme.id %}"><h3>{{ meme.title }}</h3></a>
+          </div>
+          <div class="panel-body">
+            <img src="{{ meme.pic.url }}" class="img-responsive"/>
+            <span class="glyphicon glyphicon-thumbs-up">{{ meme.likes_sum }}</span>
+            <span class="glyphicon glyphicon-envelope">{{ meme.comments_sum }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

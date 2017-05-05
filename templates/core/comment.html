@@ -1,0 +1,82 @@
+{% load filters %}
+{% block content %}
+  {% if comment %}
+    <div class="container">
+      <div class="post-comments">
+        <div class="row">
+          <div class="media">
+            <!-- first comment -->
+            <div class="media-heading">
+              <button class="btn btn-default btn-xs" type="button" data-toggle="collapse" data-target="#collapse{{ comment.id }}" aria-expanded="false" aria-controls="collapseExample"><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></button> <span class="label label-info">{{ comment.user.username }}</span>
+              {% if comment.created_mins_ago < 60 %}
+                {{ comment.created_mins_ago }} minutes ago
+              {% elif comment.created_mins_ago < 1440 %}
+                {{ comment.created_mins_ago|div:60 }} hours ago
+              {% elif comment.created_mins_ago < 525600 %}
+                {{ comment.created_mins_ago|div:1440 }} days ago
+                {% else %}
+                {{ comment.created_mins_ago|div:525600 }} years ago
+              {% endif %}
+            </div>
+            <div class="panel-collapse collapse in" id="collapse{{ comment.id }}">
+              <div class="media-left">
+                <div class="vote-wrap">
+                  {{ comment.likes_sum}}
+                </div>
+                <!-- vote-wrap -->
+              </div>
+              <!-- media-left -->
+              <div class="media-body">
+                {% if comment.deleted %}
+                  <b>comment deleted</b>
+                {% else %}
+                  <p>{{ comment.message }}</p>
+                {% endif %}
+                <div class="comment-meta">
+                    <form method="POST" action="{% url 'like_comment' comment_id=comment.id  %}">
+                      <div class="form-group">
+                        {% csrf_token %}
+                      </div>
+                      <button type="submit" class="astext">
+                        {% if request.user in comment.get_likers %}
+                        dislike
+                          {% else %}
+                          like
+                          {% endif %}
+                      </button>
+                    </form>
+                  <span>
+                        <a class="" role="button" data-toggle="collapse" href="#replyComment{{ comment.id }}" aria-expanded="false" aria-controls="collapseExample">reply</a>
+                  </span>
+                  {% if comment.user == request.user and not comment.deleted %}
+                    <span>
+                      <form method="POST" action="{% url 'delete_comment' meme_id=meme.id comment_id=comment.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="astext"><a>delete</a></button>
+                      </form>
+                  </span>
+                  {% endif %}
+                  <div class="collapse" id="replyComment{{ comment.id }}">
+                    <form method="POST" action="{% url 'reply_comment' meme_id=meme.id comment_id=comment.id  %}">
+                      <div class="form-group">
+                        <label for="comment">Your Comment</label>
+                        {% csrf_token %}
+                        {{ comment_form.as_table }}
+                      </div>
+                      <button type="submit" class="btn btn-default">Send</button>
+                    </form>
+                  </div>
+                </div>
+                {% for sub_comment in comment.comment_set.all %}
+                  {% with sub_comment as comment %}
+                    {% include "core/comment.html" %}
+                  {% endwith %}
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
